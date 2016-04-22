@@ -1,33 +1,20 @@
-use std::collections::HashMap;
-
 pub fn annotate(board: &Vec<&str>) -> Vec<String> {
-	let mine_pos = get_mine_pos(board);
-	mine_pos.iter().fold(HashMap::new(), |mut acc, &(i,j)| {
-		if let Some(x) = i.checked_sub(1) {
-			acc.insert((x, j)).or
+	let mut newboard : Vec<Vec<char>> = board.iter().cloned().map(|r|r.chars().collect()).collect();
 
-
-			if let Some(y) = j.checked_sub(1) {
-
-			}
-		}
-
-	})
-
-}
-
-fn get_mine_pos(board: &Vec<&str>) -> Vec<(usize,usize)> {
-	let mut res = Vec<_>::new();
 	for (i, row) in board.iter().enumerate() {
-		for (j, ele) in row.chars() {
+		for (j, ele) in row.chars().enumerate() {
 			if ele == '*' {
-				res.push((i,j));
+				for dx in -1..2 {
+					for dy in -1..2 {
+						if let (Some(x), Some(y)) = (i.checked_add(dx), j.checked_add(dy)){
+							let counter = newboard[x][y];
+							newboard[x][y] = if counter == ' ' {'1'} else {(counter as u8 + 1) as char};
+						}
+					}
+				}
 			}
 		}
 	}
-	res
-}
 
-fn hashmap_to_board() {
-
+	newboard.iter().map(|r| r.iter().cloned().collect()).collect()
 }
